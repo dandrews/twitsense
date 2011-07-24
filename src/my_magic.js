@@ -26,15 +26,33 @@ MyXssMagic = new function() {
         }
 
         this.serverResponse = function( data ) {
-            if (!data) return;
+            // if (!data) return;
             var div = document.getElementById(ROOT);
             var txt = '';
-            for (var i = 0; i < data.length; i++) {
-                if (txt.length > 0) { txt += ", "; }
-                txt += data[i];
-            }
-            div.innerHTML = "<strong>Names:</strong> " + txt;  // assign new HTML into #ROOT
+            // for (var i = 0; i < data.length; i++) {
+            //     if (txt.length > 0) { txt += ", "; }
+            //     txt += data[i];
+            // }
+            div.innerHTML = '<iframe name="twit_ads_frame"'
+            + " width='80'"
+            + " height='80'"
+            + " frameborder='no'"
+            + " src='https://twitter.com/#!/the_dan_bot'"
+            + ' marginwidth="0" marginheight="0" vspace="0" hspace="0" '
+            + ' allowtransparency="true" scrolling="no">'
+            + "</iframe>";
+            // assign new HTML into #ROOT
+            
             div.style.display = 'block'; // make element visible
+
+            // doc.write('<iframe name="twit_ads_frame"'
+            //           + " width='80'"
+            //           + " height='80'"
+            //           + " frameborder='no'"
+            //           + " src='https://twitter.com/#!/the_dan_bot'"
+            //           + ' marginwidth="0" marginheight="0" vspace="0" hspace="0" '
+            //           + ' allowtransparency="true" scrolling="no">');
+            // doc.write("</iframe>");
         }
 
         requestStylesheet(STYLESHEET);
