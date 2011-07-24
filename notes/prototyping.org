@@ -1,0 +1,34 @@
+* Prototype / Demo
+  
+Build a fake external site for testing purposes
+
+put the html snippet on the page
+
+watch the page update as the twitter person tweets
+
+make a mock site where a person can copy/paste the html from
+
+let publisher choose categories of tweets 
+
+Let publisher choose money or traffic from related twitter people
+
+Have a dashboard for the publisher account
+    track clicks and money
+    
+** The above functionality is really what a 'badge' does
+
+Build a dashboard site for a user to build a campaign
+
+Have the user authenticate their twitter account
+
+Let user choose URL for advertisement
+
+Let user choose tweets to promote
+
+Let user categorize their content
+
+Pay per impression or click-through...
+
+
+
+
