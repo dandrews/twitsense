@@ -13,7 +13,7 @@ echo "<iframe
                 border-color: #333;   // border color
                 border-width: 2px;    // border width
                 background: #FFF;     // background color
-                '>
-      </iframe>";
+                '
+      />";
 
 ?>
