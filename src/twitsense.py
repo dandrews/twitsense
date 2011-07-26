@@ -1,18 +1,20 @@
 from random import choice
 
-users = ["the_dan_bot","dandrewsify"]
+def tweet():
 
-tweets = {'the_dan_bot':['Working with the twitter API',
-                         'The Twitter API is easy',
-                         'Good times with the twitter API'],
-          'dandrewsify':['Not Working with the twitter API',
-                         'The Twitter API is hard',
-                         'Bad times with the twitter API']
-          }
+    users = ["the_dan_bot","dandrewsify"]
 
-user = choice(users)
-tweet = choice(tweets[user])
+    tweets = {'the_dan_bot':['Working with the twitter API',
+                             'The Twitter API is easy',
+                             'Good times with the twitter API'],
+              'dandrewsify':['Not Working with the twitter API',
+                             'The Twitter API is hard',
+                             'Bad times with the twitter API']
+              }
 
-frame_content = "<div><a target='_parent' href='https://twitter.com/#!/" + user + "'>'" + tweet + "'</a> -" + user + "</div>"
+    user = choice(users)
+    tweet = choice(tweets[user])
 
-print frame_content
+    frame_content = "<html><body><div><a target='_parent' href='https://twitter.com/#!/" + user + "'>'" + tweet + "'</a> - @" + user + "</div></body></html>"
+
+    return frame_content
