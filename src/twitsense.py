@@ -1,20 +1,35 @@
+import sqlite3 as sqlite
 from random import choice
 
 def tweet():
 
-    users = ["the_dan_bot","dandrewsify"]
+    connection = sqlite.connect('../db/twitter.db')
 
-    tweets = {'the_dan_bot':['Working with the twitter API',
-                             'The Twitter API is easy',
-                             'Good times with the twitter API'],
-              'dandrewsify':['Not Working with the twitter API',
-                             'The Twitter API is hard',
-                             'Bad times with the twitter API']
-              }
+    c = connection.cursor()
 
-    user = choice(users)
-    tweet = choice(tweets[user])
+    c.execute('select distinct u_id from tweets')
 
-    frame_content = "<html><body><div><a target='_parent' href='https://twitter.com/#!/" + user + "'>'" + tweet + "'</a> - @" + user + "</div></body></html>"
+    user = choice(c.fetchall())[0]
 
-    return frame_content
+    c.execute('select data from tweets where u_id=%s' % user )
+
+    tweet = choice(c.fetchall())[0]
+
+    # users = ["the_dan_bot","dandrewsify"]
+
+    # tweets = {'the_dan_bot':['Working with the twitter API',
+    #                          'The Twitter API is easy',
+    #                          'Good times with the twitter API'],
+    #           'dandrewsify':['Not Working with the twitter API',
+    #                          'The Twitter API is hard',
+    #                          'Bad times with the twitter API']
+    #           }
+
+    # user = choice(users)
+    # tweet = choice(tweets[user])
+
+    frame_content = "<html><body><div><a target='_parent' href='https://twitter.com/#!/%s'>'%s'</a> - @%s</div></body></html>" % (user,tweet,user)
+
+    print frame_content
+
+tweet()    
