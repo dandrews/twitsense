@@ -19,8 +19,15 @@ arsort($words);
 
 $top_words = array();
 
-$stopwords_arr = array("to", "in", "each", "and", "a", "s", "t", "is", "if", "you", "your", "the", "this", "they", "that");
-
+// words we don't give a shit about
+// probably will need to expand to use a file
+$stopwords_arr = array("to", "in", "each",
+                       "and", "a", "i",
+                       "s", "t", "is",
+                       "if", "you", "your",
+                       "he", "she", "it",
+                       "the", "this","they",
+                       "that");
 
 // filter out infrequently use and unimportant words
 foreach ($words as $key => $val )
