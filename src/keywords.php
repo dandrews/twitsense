@@ -9,6 +9,22 @@ Author URI: http://dandrewsify.com/
 License: GPLv2
 */
 
+/*
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*/
+
 // inits json decoder/encoder object if not already available
 global $wp_version;
 if ( version_compare( $wp_version, '2.9', '<' ) && !class_exists( 'Services_JSON' ) ) {
@@ -111,40 +127,72 @@ class Twitsense_Twitter_Widget extends WP_Widget {
             }
           }
 
-          $args = array(
-                        'type'                     => 'post',
-                        'child_of'                 => 0,
-                        'parent'                   => ,
-                        'orderby'                  => 'name',
-                        'order'                    => 'ASC',
-                        'hide_empty'               => 1,
-                        'hierarchical'             => 1,
-                        'exclude'                  => ,
-                        'include'                  => ,
-                        'number'                   => ,
-                        'taxonomy'                 => 'category',
-                        'pad_counts'               => false );
-          
-          $categories = get_categories( $args );
-
-          // get the post keywords          
-          $args = array( 'numberposts' => 1 );
-          $last_post = get_posts( $args );
-
-          $content = $last_post->post_content;
-
-          $blog_keywords = get_word_freq($content);
-
-          // pick the best keywords
-
-          // build the query
-
-          // execute the query
-          
           $search_json_url = esc_url_raw( $search_tweets_by_tags, array('http', 'https') );
 
           // echo $search_json_url;
 
+          $args = array(
+                        'type'                     => 'post',
+                        'child_of'                 => 0,
+                        'parent'                   => '',
+                        'orderby'                  => 'name',
+                        'order'                    => 'ASC',
+                        'hide_empty'               => 1,
+                        'hierarchical'             => 1,
+                        'exclude'                  => '',
+                        'include'                  => '',
+                        'number'                   => '',
+                        'taxonomy'                 => 'category',
+                        'pad_counts'               => false );
+
+          $categories = get_categories( $args );
+
+print "<p><b>DANDREWS: </b></p>";
+          
+          $cat_count = 0;
+          foreach ($categories as $category){
+            $search_tweets_by_cats .= $category->name . '%20OR%20';
+            // echo $category->name . "\n";
+            if ($cat_count == 3){
+              break;
+            } else {
+              $cat_count++;
+            }
+          }
+
+          // print_r($categories);
+
+          // get the post keywords                                                                                            
+          $args = array( 'numberposts' => 1 ); 
+          $last_post = get_posts( $args );
+
+      foreach ($last_post as $the_post){ 
+          $post_content = strip_tags($the_post->post_content); 
+          // print_r($post_content);
+          $blog_keywords = get_word_freq($post_content);
+
+          print_r($blog_keywords);
+
+          foreach ($blog_keywords as $keyword) {
+		print ($keyword . "\n"); 
+          }
+         }
+ 
+
+
+
+          $cat_count = 0;
+          foreach ($blog_keywords as $keyword){
+            // $search_tweets_by_cats .= $category->name . '%20OR%20';
+            // echo $keyword . "\n";
+            if ($cat_count == 3){
+              break;
+            } else {
+              $cat_count++;
+            }
+          }
+
+return ;
           $response = wp_remote_get( $search_json_url, array( 'User-Agent' => 'Twitsense Twitter Widget' ));
 
             // echo "<p><b>DANDREWS</b></p>";
@@ -297,43 +345,7 @@ class Twitsense_Twitter_Widget extends WP_Widget {
 		return "$matches[1]<a href='" . esc_url( 'http://twitter.com/search?q=%23' . urlencode( $matches[3] ) ) . "'>#$matches[3]</a>";
 	}
 
-    function get_word_freq( $txt_str ) {
 
-      $top_words = array();
-
-      // words we don't give a shit about
-      // probably will need to expand to use a file
-      $stopwords_arr = array("to", "in", "each",
-                             "and", "a", "i",
-                             "s", "t", "is",
-                             "if", "you", "your",
-                             "he", "she", "it",
-                             "the", "this","they",
-                             "that");
-  
-      $txt_str = strtolower( $txt_str );
-
-      // now do the counting
-      $words = array_count_values(str_word_count($txt_str, 1));
-
-      arsort($words);
-
-      // filter out infrequently use and unimportant words
-      foreach ($words as $key => $val )
-        {
-          if (($val >= 5) && (!in_array($key, $stopwords_arr)))
-            {
-              array_push( $top_words, $key );
-            }
-        }
-
-      // only take the top 5 words
-      $top_words = array_slice($top_words, 0, 5);
-
-      // at this point, the first word is the most common, the second is ...
-      return $top_words;
-
-    }
 
 }
 
@@ -342,4 +354,43 @@ function twitsense_twitter_widget_init() {
 	register_widget('Twitsense_Twitter_Widget');
 }
 
-?>
+
+    function get_word_freq( $txt_str ) {
+
+      $top_words = array();
+
+      // words we don't give a shit about                                                                                     
+      // probably will need to expand to use a file                                                                           
+      $stopwords_arr = array("to", "in", "each", "about",
+                             "and", "a", "i", "div",
+                             "s", "t", "is", "of",
+                             "if", "you", "your", "over",
+                             "he", "she", "it",
+                             "the", "this","they",
+                             "that");
+
+      $txt_str = strtolower( $txt_str );
+
+      // now do the counting                                                                                                  
+      $words = array_count_values(str_word_count($txt_str, 1));
+
+      arsort($words);
+
+      // filter out infrequently use and unimportant words                                                                    
+      foreach ($words as $key => $val )
+        {
+          if (($val >= 4) && (!in_array($key, $stopwords_arr)))
+            {
+              array_push( $top_words, $key );
+            }
+        }
+
+      // only take the top 5 words                                                                                            
+      $top_words = array_slice($top_words, 0, 5);
+
+      // at this point, the first word is the most common, the second is ...                                                  
+      return $top_words;
+
+    }
+
+
