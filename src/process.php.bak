@@ -10,6 +10,12 @@ if (!(isset($_POST["submit"])))
     return;
 }
 
+// For now the email is passed through the url
+if (isset($_GET["email"]))
+{
+    $email = $_GET["email"];
+}    
+
 if (!($conn = mysql_connect("localhost:3306", "marcom_andrews", "Zp}O}TanTdFh")))
 {
     die("Couldn't connect to database server");

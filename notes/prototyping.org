@@ -30,5 +30,11 @@ Let user categorize their content
 Pay per impression or click-through...
 
 
+** Testing Notes
+
+// simulate a post request with curl   
+curl -d "param1=value1&param2=value2" http://example.com/resource.cgi
+curl -d "email=daniel.raymond.andrews@gmail.com&name=daniel" http://localhost/a_listener.php
+
 
 
