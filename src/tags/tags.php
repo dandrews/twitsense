@@ -117,6 +117,8 @@ class Twitsense_Twitter_Widget extends WP_Widget {
       
       $twitter_search_url = "http://search.twitter.com/search.json?q=";
 
+      $search_filter = "&result_type=popular&count=5&lang=en";
+      
       $post_args = array( 'numberposts' => 1 ); 
 
       $cat_args = array(
@@ -171,11 +173,10 @@ class Twitsense_Twitter_Widget extends WP_Widget {
       // TODO take only the top search terms
       // build the seach url
 
-      // print "<p><b>DANDREWS: </b></p>";
-
       $search_terms_arr = array_filter( array_unique( $search_terms_arr ) );
 
-      // print_r( $search_terms_arr );
+      // TODO send this array off to atlatler.com
+      // TODO gut the following code up to
 
       if ( !empty( $search_terms_arr ) ) {
         foreach ( $search_terms_arr as $term) {
@@ -187,18 +188,14 @@ class Twitsense_Twitter_Widget extends WP_Widget {
         return;
       }
 
-      $search_json_url = esc_url_raw( $twitter_search_url, array('http', 'https') );
+      $twitter_search_url .= $search_filter;
 
-      // print $search_json_url;
+      $search_json_url = esc_url_raw( $twitter_search_url, array('http', 'https') );
 
       $response = wp_remote_get( $search_json_url, array( 'User-Agent' => 'Twitsense Twitter Widget' ));
 
-      // print_r ($response);
-
       $response_code = wp_remote_retrieve_response_code( $response );
 
-      // echo "<p>response code {$response_code}</p>";
-            
       if ( 200 == $response_code ) {
         $tweets = wp_remote_retrieve_body( $response );
         $tweets = json_decode( $tweets, true );
@@ -242,6 +239,8 @@ class Twitsense_Twitter_Widget extends WP_Widget {
     if ( isset( $instance['beforetweet'] ) && !empty( $instance['beforetweet'] ) )
       $before_tweet = stripslashes(wp_filter_post_kses($instance['beforetweet']));
 
+    // TODO have atlatler.com return tweets already formatted in html
+    // format tweets into html
     echo '<ul class="tweets">' . "\n";
 
     $tweets_out = 0;
