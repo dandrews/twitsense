@@ -1,14 +1,14 @@
 <?php
 
-      // $search_url = "http://search.twitter.com/search.json?q=%23friendship";
+  // $search_url = "http://search.twitter.com/search.json?q=%23friendship";
 
-      // rice or beans and cheese: http://twitter.com/#!/search/rice%20or%20beans%20and%20cheese
-      // fake latin fun: http://twitter.com/#!/search/fake%20latin%20and%20fun
-      // ignore me please #friend: http://twitter.com/#!/search/ignore%20me%20please%20%23friend
-      // $public_tweets = 'https://api.twitter.com/1/statuses/public_timeline.json';
+  // rice or beans and cheese: http://twitter.com/#!/search/rice%20or%20beans%20and%20cheese
+  // fake latin fun: http://twitter.com/#!/search/fake%20latin%20and%20fun
+  // ignore me please #friend: http://twitter.com/#!/search/ignore%20me%20please%20%23friend
+  // $public_tweets = 'https://api.twitter.com/1/statuses/public_timeline.json';
 
-      // $cached_tweets = 'http://atlatler.com/twitsense/tweets.json';
-      // love%20OR%20hate
+  // $cached_tweets = 'http://atlatler.com/twitsense/tweets.json';
+  // love%20OR%20hate
 
 function make_url( $terms )
 {
@@ -21,7 +21,7 @@ function make_url( $terms )
   
   $search_url = $twitter_search_url . $search_terms . $search_filter;
 
-  // echo "search url: " . $search_url . "\n";
+  echo "search url: " . $search_url . "\n";
 
   return $search_url;
 }
@@ -55,9 +55,9 @@ function exec_request( $url )
   $response_code = curl_getinfo($result, CURLINFO_HTTP_CODE);
   
   if ( 200 != $response_code )
-  {
-    $response = get_cached_tweets();
-  }
+    {
+      $response = get_cached_tweets();
+    }
 
   return $response;
 
@@ -95,6 +95,8 @@ function post_responder()
 
   $response = exec_request( $search_url );
 
+  echo $response;
+  
   return $response;
   
 }
@@ -114,13 +116,12 @@ else
 switch ($method)
   {
   case 'POST':
-    echo post_responder() . "\n";
+    $content = post_responder() ;
+    return $content;
     break;
   default:
     echo "What method is being used?\n";
     return false;
   }    
-
-return true;
 
 ?>
