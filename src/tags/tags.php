@@ -103,21 +103,11 @@ class Twitsense_Twitter_Widget extends WP_Widget {
        * If we are not filtering out replies then we should specify our requested tweet count
        */
 
-      // $search_url = "http://search.twitter.com/search.json?q=%23friendship";
+      $service_url = "http://atlatler.com/twitsense/twitsense.php";
 
-      // rice or beans and cheese: http://twitter.com/#!/search/rice%20or%20beans%20and%20cheese
-      // fake latin fun: http://twitter.com/#!/search/fake%20latin%20and%20fun
-      // ignore me please #friend: http://twitter.com/#!/search/ignore%20me%20please%20%23friend
-      // $public_tweets = 'https://api.twitter.com/1/statuses/public_timeline.json';
-
-      // $cached_tweets = 'http://atlatler.com/twitsense/tweets.json';
-      // love%20OR%20hate
-
-      $search_terms_arr = array();
+      $service_url = esc_url_raw( $service_url, array('http', 'https') );
       
-      $twitter_search_url = "http://search.twitter.com/search.json?q=";
-
-      $search_filter = "&result_type=popular&count=5&lang=en";
+      $terms_arr = array();
       
       $post_args = array( 'numberposts' => 1 ); 
 
@@ -139,7 +129,7 @@ class Twitsense_Twitter_Widget extends WP_Widget {
         $blog_keywords = get_word_freq($post_content);
         $post_id = $last_post[0]->ID;
         foreach ( $blog_keywords as $keyword ) {
-          array_push( $search_terms_arr, $keyword ); 
+          array_push( $terms_arr, $keyword ); 
         }
       }
 
@@ -156,7 +146,7 @@ class Twitsense_Twitter_Widget extends WP_Widget {
       if ( !empty($categories) ) {      
         for ( $jj = 0; $jj < 3 ; $jj++ ) {
           if ( !is_null( $categories[$jj] ) ) {
-            array_push( $search_terms_arr, $categories[$jj]->name );
+            array_push( $terms_arr, $categories[$jj]->name );
           } else { break; }
         }
       }
@@ -165,34 +155,26 @@ class Twitsense_Twitter_Widget extends WP_Widget {
       if ( !empty($tags) ) {
         for ( $ii = 0; $ii < 3 ; $ii++ ) {
           if ( !is_null( $tags[$ii] ) ) {
-            array_push( $search_terms_arr, $tags[$ii]->name );
+            array_push( $terms_arr, $tags[$ii]->name );
           } else { break; }
         }
       }
       
-      // TODO take only the top search terms
-      // build the seach url
+      // filter and concatenate the terms
+      $terms_arr = array_filter( array_unique( $terms_arr ) );
 
-      $search_terms_arr = array_filter( array_unique( $search_terms_arr ) );
-
-      // TODO send this array off to atlatler.com
-      // TODO gut the following code up to
-
-      if ( !empty( $search_terms_arr ) ) {
-        foreach ( $search_terms_arr as $term) {
-          if ( !empty( $term ) ) {
-            $twitter_search_url .= $term . '%20OR%20';
-          }
-        }
+      if ( !empty( $terms_arr ) ) {
+        $terms = implode( ":", $terms_arr );
       } else {
         return;
       }
 
-      $twitter_search_url .= $search_filter;
+      $body = array(
+                    'terms' => $terms,
+                    'user' => 'Clive'
+                    );
 
-      $search_json_url = esc_url_raw( $twitter_search_url, array('http', 'https') );
-
-      $response = wp_remote_get( $search_json_url, array( 'User-Agent' => 'Twitsense Twitter Widget' ));
+      $response = wp_remote_post( $service_url, $body );
 
       $response_code = wp_remote_retrieve_response_code( $response );
 
@@ -213,24 +195,6 @@ class Twitsense_Twitter_Widget extends WP_Widget {
       wp_cache_add( 'widget-twitter-' . $this->number, $tweets, 'widget', $expire );
     }
 
-    if ($response_code != 200 ) {
-          
-      $response = wp_remote_get( $cached_json_url );
-      $response_code = wp_remote_retrieve_response_code( $response );            
-
-      if ( 200 == $response_code ) {
-              
-        $tweets = wp_remote_retrieve_body( $response );
-        $tweets = json_decode( $tweets, true );
-        $expire = 900;
-      } else {
-        $tweets = 'error';
-        $expire = 300;
-        wp_cache_add( 'widget-twitter-response-code-' . $this->number, $response_code, 'widget', $expire);
-      }
-            
-    }
-        
     if ( 'error' != $tweets ) :
       $before_timesince = ' ';
     if ( isset( $instance['beforetimesince'] ) && !empty( $instance['beforetimesince'] ) )
