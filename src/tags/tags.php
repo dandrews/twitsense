@@ -105,7 +105,7 @@ class Twitsense_Twitter_Widget extends WP_Widget {
 
       $service_url = "http://atlatler.com/twitsense/twitsense.php";
 
-      $service_url = esc_url_raw( $service_url, array('http', 'https') );
+      // $service_url = esc_url_raw( $service_url, array('http', 'https') );
       
       $terms_arr = array();
       
