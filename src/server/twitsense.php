@@ -83,16 +83,16 @@ function post_responder()
   
 }
 
-/* if (isset($_SERVER['REQUEST_METHOD'])) */
-/*   { */
-/*     $method = $_SERVER['REQUEST_METHOD']; */
-/*   } */
-/* else */
-/*   { */
-/*     echo "The SERVER variable is not set: "; */
-/*     var_dump($_SERVER); */
-/*     return false; */
-/*   } */
+if (isset($_SERVER['REQUEST_METHOD']))
+  {
+    $method = $_SERVER['REQUEST_METHOD'];
+  }
+else
+  {
+    echo "The SERVER variable is not set: ";
+    var_dump($_SERVER);
+    return false;
+  }
 
 $content = post_responder();
 
