@@ -1,1 +1,0 @@
-MyXssMagic.serverResponse(['dandrews', 'bear', 'kiwi', '<a href="https://twitter.com/#!/the_dan_bot">the_dan_bot</a>']);
