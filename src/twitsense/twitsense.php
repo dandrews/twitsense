@@ -8,7 +8,6 @@
     Author URI: http://dandrewsify.com/
     License: GPLv2
   */
-
   /*
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License
@@ -24,6 +23,15 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
   */
+
+function make_twitter_url( $terms )
+{
+  $twitter_search_url = "http://search.twitter.com/search.json?q=";
+  $search_filter = "&result_type=popular&count=5&lang=en";
+  $search_terms = rawurlencode( str_replace( ':', ' OR ', $terms ) );
+  $search_url = $twitter_search_url . $search_terms . $search_filter;
+  return $search_url;
+}
 
   // inits json decoder/encoder object if not already available
 global $wp_version;
@@ -103,8 +111,6 @@ class Twitsense_Twitter_Widget extends WP_Widget {
        * If we are not filtering out replies then we should specify our requested tweet count
        */
 
-      $service_url = "http://atlatler.com/twitsense/twitsense.php";
-
       $terms_arr = array();
       
       $post_args = array( 'numberposts' => 1 ); 
@@ -173,7 +179,7 @@ class Twitsense_Twitter_Widget extends WP_Widget {
                     );
 
       $request_args = array(
-                            'method' => 'POST',
+                            'method' => 'GET',
                             'timeout' => 45,
                             'redirection' => 5,
                             'httpversion' => '1.0',
@@ -183,7 +189,9 @@ class Twitsense_Twitter_Widget extends WP_Widget {
                             'cookies' => array()
                             );
 
-      $response = wp_remote_post( $service_url, $request_args );
+      $twitter_search_url = make_twitter_url( $terms );
+
+      $response = wp_remote_get( $twitter_search_url, $request_args );
 
       $response_code = wp_remote_retrieve_response_code( $response );
 
@@ -212,7 +220,6 @@ class Twitsense_Twitter_Widget extends WP_Widget {
     if ( isset( $instance['beforetweet'] ) && !empty( $instance['beforetweet'] ) )
       $before_tweet = stripslashes(wp_filter_post_kses($instance['beforetweet']));
 
-    // TODO have atlatler.com return tweets already formatted in html
     // format tweets into html
     echo '<ul class="tweets">' . "\n";
 
@@ -240,8 +247,6 @@ class Twitsense_Twitter_Widget extends WP_Widget {
 
       if ( isset($tweet['from_user']) )
         $account = urlencode($tweet['from_user']);
-      else
-        $account = "dandrewsify";
 
       // print out the individual user name and tweet
       echo "<li><a href=\"" . esc_url( "http://twitter.com/{$account}/" ) . '" class="user_account">' . $account . "</a><br />";
